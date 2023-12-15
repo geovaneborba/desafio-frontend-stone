@@ -1,5 +1,6 @@
 import { Container } from "./styles";
 import stoneLogo from "../../assets/stone-logo.svg";
+
 export function Header() {
   return (
     <Container>
