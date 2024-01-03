@@ -1,5 +1,6 @@
 import { Container } from "./styles";
 import stoneLogo from "../../assets/stone-logo.svg";
+import dayjs from "dayjs";
 
 export function Header() {
   return (
@@ -7,7 +8,7 @@ export function Header() {
       <img src={stoneLogo} alt="Logo da Stone" />
 
       <div>
-        <span>14 de janeiro 2021 | 21:00 UTC</span>
+        <span>{dayjs().format("DD [de] MMMM YYYY | HH:mm [UTC]")}</span>
         <p>Dados de câmbio disponibilizados pela Morningstar.</p>
       </div>
     </Container>
