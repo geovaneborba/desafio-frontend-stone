@@ -5,7 +5,7 @@ export const Container = styled.header`
   align-items: center;
   column-gap: 3rem;
 
-  @media (max-width: 620px) {
+  @media (max-width: 768px) {
     flex-direction: column;
 
     img {
@@ -18,7 +18,7 @@ export const Container = styled.header`
     flex-direction: column;
     row-gap: 0.5rem;
 
-    @media (max-width: 620px) {
+    @media (max-width: 768px) {
       margin-top: 2rem;
     }
 

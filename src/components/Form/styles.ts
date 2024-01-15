@@ -8,11 +8,12 @@ export const Container = styled.form`
   margin-top: 6.5625rem;
   max-width: 22.5rem;
 
-  @media (max-width: 620px) {
+  @media (max-width: 768px) {
     width: 100%;
     display: flex;
     flex-direction: column;
     max-width: none;
+    padding-bottom: 4rem;
   }
 `;
 
@@ -20,7 +21,7 @@ export const CurrencyWrapper = styled.div`
   display: flex;
   column-gap: 1.5rem;
 
-  @media (max-width: 620px) {
+  @media (max-width: 768px) {
     flex-direction: column;
     row-gap: 2rem;
   }
@@ -52,7 +53,7 @@ export const InputContainer = styled.div`
   width: 10.5rem;
   box-shadow: 0px 8px 4px 0px rgba(13, 17, 27, 0.08);
 
-  @media (max-width: 620px) {
+  @media (max-width: 768px) {
     width: 100%;
   }
 

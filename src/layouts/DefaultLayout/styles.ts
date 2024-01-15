@@ -8,7 +8,7 @@ export const Container = styled.div`
   background-repeat: no-repeat;
   padding: 4rem;
 
-  @media (max-width: 620px) {
+  @media (max-width: 768px) {
     background-image: none;
     padding: 1rem;
   }
@@ -17,5 +17,9 @@ export const Container = styled.div`
     background-size: 100% 100%;
     max-width: 1440px;
     margin: 0 auto;
+  }
+
+  @media (max-width: 1440px) and (max-height: 900px) {
+    background-size: contain;
   }
 `;
