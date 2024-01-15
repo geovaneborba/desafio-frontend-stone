@@ -1,13 +1,29 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+type ButtonProps = {
+  isValid: boolean;
+};
 
 export const Container = styled.form`
   margin-top: 6.5625rem;
   max-width: 22.5rem;
+
+  @media (max-width: 620px) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: none;
+  }
 `;
 
 export const CurrencyWrapper = styled.div`
   display: flex;
   column-gap: 1.5rem;
+
+  @media (max-width: 620px) {
+    flex-direction: column;
+    row-gap: 2rem;
+  }
 `;
 
 export const CurrencyGroup = styled.div`
@@ -36,6 +52,10 @@ export const InputContainer = styled.div`
   width: 10.5rem;
   box-shadow: 0px 8px 4px 0px rgba(13, 17, 27, 0.08);
 
+  @media (max-width: 620px) {
+    width: 100%;
+  }
+
   input {
     all: unset;
 
@@ -62,6 +82,39 @@ export const InputStateTax = styled(InputContainer)`
 export const PaymentMethodSelection = styled.div`
   margin-top: 2rem;
 
+  input[type="radio"] {
+    appearance: none;
+    background-color: #fff;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid ${(props) => props.theme.colors.gray["300"]};
+    border-radius: 50%;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+
+    &::before {
+      content: "";
+      width: 0.65em;
+      height: 0.65em;
+      border-radius: 50%;
+      transform: scale(0);
+      transition: 120ms transform ease-in-out;
+      box-shadow: inset 1em 1em ${(props) => props.theme.colors.green[700]};
+    }
+
+    &:checked::before {
+      transform: scale(1);
+    }
+
+    &:checked {
+      border-color: ${(props) => props.theme.colors.green[700]};
+    }
+  }
+
   > label {
     display: block;
     font-weight: 500;
@@ -72,7 +125,7 @@ export const PaymentMethodSelection = styled.div`
   span {
     display: block;
     margin-top: 1rem;
-    color: #b00020;
+    color: ${(props) => props.theme.colors.red};
   }
 `;
 
@@ -86,7 +139,7 @@ export const InputContainerPaymentMethod = styled.div`
   gap: 0.5rem;
 `;
 
-export const ButtonConvert = styled.button`
+export const ButtonConvert = styled.button<ButtonProps>`
   all: unset;
   display: flex;
   align-items: center;
@@ -98,4 +151,11 @@ export const ButtonConvert = styled.button`
   margin-top: 2rem;
   column-gap: 1rem;
   color: ${(props) => props.theme.colors.while};
+
+  ${(props) =>
+    props.isValid
+      ? css`
+          background-color: ${(props) => props.theme.colors.green["700"]};
+        `
+      : ""}
 `;

@@ -56,7 +56,8 @@ export function Form({ onSubmit }: FormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+
+    formState: { errors, isValid },
   } = useForm<CurrencyForm>({
     mode: "onSubmit",
     resolver: zodResolver(currencySchema),
@@ -150,7 +151,7 @@ export function Form({ onSubmit }: FormProps) {
         )}
       </PaymentMethodSelection>
 
-      <ButtonConvert type="submit">
+      <ButtonConvert type="submit" isValid={isValid}>
         <ArrowsLeftRight size={16} />
         Converter
       </ButtonConvert>
