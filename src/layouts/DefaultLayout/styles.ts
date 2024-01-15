@@ -8,6 +8,11 @@ export const Container = styled.div`
   background-repeat: no-repeat;
   padding: 4rem;
 
+  @media (max-width: 620px) {
+    background-image: none;
+    padding: 1rem;
+  }
+
   @media (max-width: 1440px) {
     background-size: 100% 100%;
     max-width: 1440px;
