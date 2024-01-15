@@ -22,7 +22,7 @@ export const CurrencyGroup = styled.div`
   span {
     display: block;
     margin-top: 1rem;
-    color: #b00020;
+    color: ${(props) => props.theme.colors.red};
   }
 `;
 
