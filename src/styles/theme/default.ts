@@ -12,5 +12,7 @@ export const defaultTheme = {
     },
 
     while: "#ffffff",
+
+    red: "#b00020",
   },
 };
