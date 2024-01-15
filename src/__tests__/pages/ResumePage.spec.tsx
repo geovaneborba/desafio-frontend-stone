@@ -14,10 +14,14 @@ const { mockedUseDollarQuery } = vi.hoisted(() => ({
   mockedUseDollarQuery: vi.fn(),
 }));
 
-vi.mock("react-router-dom", async (importOriginal) => ({
-  ...(await importOriginal()),
-  useNavigate: () => mockedNavigate,
-}));
+vi.mock("react-router-dom", async (importOriginal) => {
+  const actual: object = await importOriginal();
+
+  return {
+    ...actual,
+    useNavigate: () => mockedNavigate,
+  };
+});
 
 vi.mock("../../hooks/useDollarQuery", () => ({
   useDollarQuery: mockedUseDollarQuery,
