@@ -3,15 +3,16 @@ import {
   AdditionalInfo,
   BackButton,
   Container,
+  ErrorContainer,
   ResultAmount,
   ResultContainer,
 } from "./styles";
-import { useLocation } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
-import { api } from "../../lib/axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import { priceFormatter } from "../../utils/price-formatter";
 import { calculateCreditTotal } from "../../utils/calculate-credit-total";
 import { calculateMoneyTotal } from "../../utils/calculate-money-total";
+import { useDollarQuery } from "../../hooks/useDollarQuery";
 
 type StateData = {
   amount: number;
@@ -19,46 +20,50 @@ type StateData = {
   paymentMethod: "money" | "credit";
 };
 
-type DollarQuotationApiResponse = {
-  USDBRL: {
-    code: string;
-    codein: string;
-    name: string;
-    high: string;
-    low: string;
-    varBid: string;
-    pctChange: string;
-    bid: string;
-    ask: string;
-    timestamp: string;
-    create_date: string;
-  };
-};
-
 export function ResumePage() {
   const location = useLocation();
-  const { amount, stateTax, paymentMethod } = location.state.data as StateData;
+  const navigate = useNavigate();
+  const { data: dollarPrice, error, status } = useDollarQuery();
 
-  const [dollarPrice, setDollarPrice] = useState(0);
+  const { amount, stateTax, paymentMethod } = (location.state
+    ?.data as StateData) || {
+    amount: 0,
+    stateTax: 0,
+    paymentMethod: "",
+  };
 
-  const calculateTotalPrice = useMemo(() => {
+  if (!location.state) {
+    navigate("/", { replace: true });
+  }
+
+  const totalPrice = useMemo(() => {
+    if (!dollarPrice) {
+      return;
+    }
+
     return paymentMethod === "money"
-      ? calculateMoneyTotal(amount, stateTax, dollarPrice)
-      : calculateCreditTotal(amount, stateTax, dollarPrice);
+      ? priceFormatter(calculateMoneyTotal(amount, stateTax, dollarPrice))
+      : priceFormatter(calculateCreditTotal(amount, stateTax, dollarPrice));
   }, [paymentMethod, amount, stateTax, dollarPrice]);
 
-  useEffect(() => {
-    const fetchDollarQuotation = async () => {
-      const response = await api("/USD-BRL");
+  if (error) {
+    return (
+      <ErrorContainer>
+        <span>
+          Aconteceu um erro ao buscar cotação do dólar. <br />
+          Tente novamente mais tarde!
+        </span>
+        <BackButton to={"/"}>
+          <ArrowLeft size={16} />
+          Voltar
+        </BackButton>
+      </ErrorContainer>
+    );
+  }
 
-      const {
-        USDBRL: { bid },
-      }: DollarQuotationApiResponse = response.data;
-
-      setDollarPrice(Number(bid));
-    };
-    fetchDollarQuotation();
-  }, []);
+  if (status === "pending") {
+    return <div>Carregando...</div>;
+  }
 
   return (
     <Container>
@@ -70,13 +75,14 @@ export function ResumePage() {
 
         <p>O resultado do cálculo é</p>
 
-        <ResultAmount>{priceFormatter(calculateTotalPrice)}</ResultAmount>
+        <ResultAmount>{totalPrice}</ResultAmount>
         <AdditionalInfo>
           Compra no {paymentMethod === "money" ? "dinheiro" : "cartão"} e taxa
           de <span>{stateTax}%</span>
         </AdditionalInfo>
         <AdditionalInfo>
-          Cotação do dólar: <span>$1,00 = {priceFormatter(dollarPrice)}</span>
+          Cotação do dólar:{" "}
+          <span>$1,00 = {priceFormatter(dollarPrice ?? 0)}</span>
         </AdditionalInfo>
       </ResultContainer>
     </Container>

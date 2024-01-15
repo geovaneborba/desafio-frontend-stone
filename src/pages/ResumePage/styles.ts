@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Container = styled.main``;
 
@@ -57,3 +57,18 @@ export const AdditionalInfo = styled.span`
     font-weight: 400;
   }
 `;
+
+export const ErrorContainer = styled.div`
+  span {
+    color: ${(props) => props.theme.colors.red};
+    font-size: 1rem;
+    display: block;
+    margin-top: 3rem;
+  }
+
+  a {
+    margin-top: 1rem;
+  }
+`;
+
+export const ErrorMessage = styled.span``;
