@@ -20,20 +20,54 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const currencySchema = z.object({
-  amount: z.number(),
-  stateTax: z.number().min(1).max(100),
-  paymentMethod: z.union([z.literal("money"), z.literal("credit")]),
+  amount: z
+    .number({
+      required_error: "O campo dólar é obrigatório.",
+    })
+    .min(1, "A quantidade deve ser maior que 0"),
+  stateTax: z
+    .number({
+      required_error: "O campo taxa do estado é obrigatório.",
+    })
+    .min(0)
+    .max(100, "A taxa do estado deve ser no máximo 100%."),
+  paymentMethod: z.union([
+    z.literal("money", {
+      errorMap: () => ({
+        message: "Você precisa selecionar uma forma de pagamento.",
+      }),
+    }),
+    z.literal("credit", {
+      errorMap: () => ({
+        message: "Você precisa selecionar uma forma de pagamento.",
+      }),
+    }),
+  ]),
 });
 
 type CurrencyForm = z.infer<typeof currencySchema>;
 
-export function Form() {
-  const { register, handleSubmit } = useForm<CurrencyForm>({
+type FormProps = {
+  onSubmit?: (data: CurrencyForm) => void;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function Form({ onSubmit }: FormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CurrencyForm>({
+    mode: "onSubmit",
     resolver: zodResolver(currencySchema),
   });
   const navigate = useNavigate();
 
   const handleCurrencySubmit = (data: CurrencyForm) => {
+    if (onSubmit) {
+      onSubmit(data);
+    }
+
     navigate("/resume", {
       state: {
         data,
@@ -45,37 +79,49 @@ export function Form() {
     <Container onSubmit={handleSubmit(handleCurrencySubmit)}>
       <CurrencyWrapper>
         <CurrencyGroup>
-          <label htmlFor="">Dólar</label>
+          <label htmlFor="dollar">Dólar</label>
           <InputContainer>
             <CurrencyDollar size={16} />
             <input
               type="number"
               placeholder="1,00"
               min={0}
-              required
-              {...register("amount", { valueAsNumber: true })}
+              id="dollar"
+              {...register("amount", {
+                setValueAs: (value) =>
+                  value === "" ? undefined : Number(value),
+              })}
             />
           </InputContainer>
+          {errors.amount && errors.amount.message && (
+            <span>{errors.amount.message}</span>
+          )}
         </CurrencyGroup>
+
         <CurrencyGroup>
-          <label htmlFor="">Taxa do estado</label>
+          <label htmlFor="stateTax">Taxa do estado</label>
           <InputStateTax>
             <input
               type="number"
               min={0}
-              max={100}
               step={0.01}
               placeholder="0"
-              required
-              {...register("stateTax", { valueAsNumber: true })}
+              id="stateTax"
+              {...register("stateTax", {
+                setValueAs: (value) =>
+                  value === "" ? undefined : Number(value),
+              })}
             />
             <Percent size={16} />
           </InputStateTax>
+          {errors.stateTax && errors.stateTax.message && (
+            <span>{errors.stateTax.message}</span>
+          )}
         </CurrencyGroup>
       </CurrencyWrapper>
 
       <PaymentMethodSelection>
-        <label htmlFor="">Tipo de compra</label>
+        <label htmlFor="money">Tipo de compra</label>
 
         <PaymentMethodWrapper>
           <InputContainerPaymentMethod>
@@ -83,7 +129,6 @@ export function Form() {
               type="radio"
               id="money"
               value={"money"}
-              required
               {...register("paymentMethod")}
             />
             <label htmlFor="money">Dinheiro</label>
@@ -94,12 +139,15 @@ export function Form() {
               type="radio"
               id="credit"
               value={"credit"}
-              required
               {...register("paymentMethod")}
             />
             <label htmlFor="credit">Cartão</label>
           </InputContainerPaymentMethod>
         </PaymentMethodWrapper>
+
+        {errors.paymentMethod && errors.paymentMethod.message && (
+          <span>{errors.paymentMethod.message}</span>
+        )}
       </PaymentMethodSelection>
 
       <ButtonConvert type="submit">

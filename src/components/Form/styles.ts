@@ -18,6 +18,12 @@ export const CurrencyGroup = styled.div`
     margin-bottom: 0.625rem;
     display: block;
   }
+
+  span {
+    display: block;
+    margin-top: 1rem;
+    color: #b00020;
+  }
 `;
 
 export const InputContainer = styled.div`
@@ -61,6 +67,12 @@ export const PaymentMethodSelection = styled.div`
     font-weight: 500;
     font-size: 1.125rem;
     margin-bottom: 1rem;
+  }
+
+  span {
+    display: block;
+    margin-top: 1rem;
+    color: #b00020;
   }
 `;
 
